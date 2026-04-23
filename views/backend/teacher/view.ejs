@@ -1,0 +1,102 @@
+
+    <div class="dashboard-main-body">
+
+        <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+            <div class="">
+                <h1 class="fw-semibold mb-4 h6 text-primary-light">Teacher Details</h1>
+                <div class="">
+                    <a href="index.html" class="text-secondary-light hover-text-primary hover-underline">Dashboard </a>
+                    <a href="/teachers" class="text-secondary-light hover-text-primary hover-underline"> /
+                        Teachers</a>
+                    <span class="text-secondary-light">/ Teachers Details</span>
+                </div>
+            </div> 
+        </div>
+
+        <div class="mt-24">
+            <div class="card h-100">
+                <div class="card-body p-24">
+                    <div class="d-flex gap-32 flex-md-row flex-column">
+                        <div class="max-w-300-px w-100 text-center">
+                            <figure class="mb-24 w-120-px h-120-px mx-auto rounded-circle overflow-hidden">
+                                <% if(teacher.photo){ %>
+                                    <img src="<%= teacher.photo %>" alt="Student Image" class="w-100 h-100 object-fit-cover">
+                               <% }else{ %>
+                                <img src="/assets/images/default_user.jpg" alt="Student Image" class="w-100 h-100 object-fit-cover">
+                               <% } %>
+
+
+                            </figure>
+                            <h2 class="h6 text-primary-light mb-16 fw-semibold"><%= teacher.name ?? "N/A" %></h2> 
+                            <div class="mt-32 d-flex gap-16 w-100">
+                                <% if(!teacher.account_status){ %>
+                                    <button type="button"
+                                    class="btn border fw-medium border-danger-600 bg-hover-danger-200 text-danger-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModalDelete">
+                                    <span class="d-flex text-lg">
+                                        <i class="ri-delete-bin-2-line"></i>
+                                    </span>
+                                    Suspend
+                                </button>
+                               <% }else{ %>
+                                    <button type="button"
+                                    class="btn border fw-medium border-success-600 bg-hover-success-200 text-success-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModalDelete">
+                                    <span class="d-flex text-lg">
+                                        <i class="ri-check-line"></i>
+                                    </span>
+                                    Activate
+                                </button>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="">
+                            <span class="h-100 w-1-px bg-neutral-200"></span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
+                                <h3 class="h6 text-primary-light text-lg mb-0 fw-semibold">Personal Info</h3>
+                                <% if(teacher.account_status){ %>
+                                    <span class="bg-success-100 text-success-600 px-16 py-4 radius-4 fw-medium text-sm">Active</span>
+                               <% }else{ %>
+                                    <span class="bg-danger-100 text-danger-600 px-16 py-4 radius-4 fw-medium text-sm">Suspended</span>
+                                <% } %>
+                                
+                            </div>
+                            <div class="mt-16 d-flex flex-column gap-8">  
+                                  <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Email</span>
+                                    <span class="fw-normal text-sm text-primary-600">: <%= teacher.email ?? "N/A" %></span>
+                                </div>
+                                <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Phone Number</span>
+                                    <span class="fw-normal text-sm text-primary-600">: <%= teacher.phone ?? "N/A" %></span>
+                                </div>
+                                <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Experience</span>
+                                    <span class="fw-normal text-sm text-primary-600">: <%= teacher.experience ?? "N/A" %> Years</span>
+                                </div>
+                                <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Date Of Joining</span>
+                                    <span class="fw-normal text-sm text-secondary-light">: <%= new Date(teacher.createdAt).toLocaleDateString('en-IN', {
+                                        day: '2-digit',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    }) %></span>
+                                </div> 
+                              
+                                <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Gender</span>
+                                    <span class="fw-normal text-sm text-secondary-light">: <%= teacher.gender ?? "N/A" %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+
+    <%
+        script = ` `;
+    %>

@@ -1,0 +1,96 @@
+
+<div class="dashboard-main-body">
+    <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+    <div class="">
+        <h1 class="fw-semibold mb-4 h6 text-primary-light">All Scheduled Exams</h1>
+        <div class="">
+            <a href="/dashboard" class="text-secondary-light hover-text-primary hover-underline">Dashboard </a>
+            <span class="text-secondary-light">/ All Scheduled Exams</span>
+        </div>
+        </div>
+        </div>
+    <div class="mt-24">
+        <div class="card h-100">
+            <div class="card-body p-0"> 
+                <div class="d-flex flex-wrap justify-content-between gap-16 px-20 py-12 border-bottom border-neutral-200">
+                        <form class="navbar-search dt-search m-0">
+                            <input type="text" class="dt-input bg-transparent radius-4" aria-controls="dataTable"
+                                name="search" placeholder="Search...">
+                            <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+                        </form>
+                        <div class="d-flex align-items-center gap-8 text-secondary-light">
+                            <span class="">
+                                Rows per page:
+                            </span>
+                            <div class="dt-length">
+                                <select name="dataTable_length" aria-controls="dataTable"
+                                    class="dt-input form-control form-select">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                <div class="p-0">
+                    <table class="table data-table" id="" data-page-length='10'>       
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <div class="form-check style-check d-flex align-items-center"> 
+                                        <label class="form-check-label">
+                                            S.L
+                                        </label>
+                                    </div>
+                                </th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Course</th>
+                                <th scope="col">Batch</th>
+                                <th scope="col">Teacher</th>  
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>  
+                            <% exams.forEach((exam, index) => { %>
+                            <tr>
+                                <td>
+                                    <div class="form-check style-check d-flex align-items-center"> 
+                                        <label class="form-check-label">
+                                            <%= index+1 %>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td><span class="text-primary-600"><a href="/scheduled-exams/view/<%= exam._id %>"><%= exam.title ?? "" %></span></a></td>
+                                <td><span class="text-primary-600"><a href="/course/live-course/view/<%= exam.course_id?._id %>"><%= exam.course_id?.name ?? "" %></a></span></td>
+                                <td><%= exam.batch_id?.title ?? "" %></td>
+                                <td><span class="text-primary-600"><a href="/teacher/view/<%= exam.teacher_id?._id %>"><%= exam.teacher_id?.name ?? "" %></a></span></td> 
+                                <td><%= exam.is_published == true ? "Published" : "Not Published" %></td> 
+                                <td>
+                                    <a href="/scheduled-exams/view/<%= exam._id %>"  
+                                        style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                                        <i class="ri-eye-line" style="font-size:16px;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                           <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%
+script = `
+<script src="/assets/js/pages/teacher.js"></script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el))
+</script>
+`;
+%>

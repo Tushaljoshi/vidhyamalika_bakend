@@ -1,0 +1,133 @@
+
+    <div class="dashboard-main-body">
+
+        <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+            <div class="">
+                <h1 class="fw-semibold mb-4 h6 text-primary-light">Online Course Order Details</h1>
+                <div class="">
+                    <a href="/" class="text-secondary-light hover-text-primary hover-underline">Dashboard </a>
+                    <a href="/order/online-course-order" class="text-secondary-light hover-text-primary hover-underline"> /
+                        Orders</a>
+                    <span class="text-secondary-light">/ Online Course Order Details</span>
+                        
+                </div>
+            </div> 
+        </div>
+        <div class="mt-24">
+            <div class="card h-100">
+                <div class="card-body p-24">
+                    <div class="d-flex gap-32 flex-md-row flex-column">
+                        <div class="max-w-300-px w-100 text-center">
+                            <figure class="mb-24 w-120-px h-120-px mx-auto rounded-circle overflow-hidden">
+                                <img src="/assets/images/default_user.jpg" alt="Student Image" class="w-100 h-100 object-fit-cover">
+                            </figure>
+                            <h2 class="h6 text-primary-light mb-16 fw-semibold"><%= order.student_id?.name %></h2>
+                            <p><%= order.student_id?.email %></p>
+                            <p><%= order.student_id?.phone %></p>
+                            <p><%= order.student_id?.gender %></p>  
+                            <div class="mt-32 d-flex gap-16 w-100">
+                            </div>
+                        </div>
+
+                        
+                        <div class="">
+                            <span class="h-100 w-1-px bg-neutral-200"></span>
+                        </div>
+                        
+                        <div class="flex-grow-1">   
+                            <div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
+                                <h3 class="h6 text-primary-light text-lg mb-0 fw-semibold">Course Detail</h3> 
+                                   <a class="btn btn-primary" href="/order/view/<%= order.order_id?._id %>">View Full Order Detail</a>
+                            </div>
+                            <div class="mt-16 d-flex flex-column gap-8"> 
+                                 <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Course Name</span>
+                                    <span class="fw-normal text-sm text-primary-600">: <%= order.course_id?.name ?? "N/A" %></span>
+                                </div>
+                                <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Price</span>
+                                    <span class="fw-normal text-sm text-primary-600">: Rs. <%= order.course_id?.sale_price ?? "N/A" %>/-</span>
+                                </div> 
+                                <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Order Date</span>
+                                    <span class="fw-normal text-sm text-secondary-light">: 
+                                        <%= 
+                                            new Date(order.order_id?.createdAt).toLocaleDateString('en-IN', {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                year: 'numeric'
+                                            })
+                                        %>
+                                    </span>
+                                </div>
+                                  
+                            </div>
+                            <br>
+                                    <hr>
+                             <br><br>
+                             <% if(order.teacher_id){ %>
+                            <div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
+                                <h3 class="h6 text-primary-light text-lg mb-0 fw-semibold">Assigned Teacher Detail</h3> 
+                            </div>
+                            <div class="mt-16 d-flex flex-column gap-8"> 
+                                 <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Name</span>
+                                    <span class="fw-normal text-sm text-primary-600">: <%= order.teacher_id?.name ?? "N/A" %></span>
+                                </div>
+                                 <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Email</span>
+                                    <span class="fw-normal text-sm text-primary-600">: <%= order.teacher_id?.email ?? "N/A" %></span>
+                                </div>
+                                <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Phone Number</span>
+                                    <span class="fw-normal text-sm text-primary-600">: <%= order.teacher_id?.phone ?? "N/A" %></span>
+                                </div>
+                                <div class="d-flex gap-4">
+                                    <span class="fw-semibold text-sm text-primary-light w-110-px">Gender</span>
+                                    <span class="fw-normal text-sm text-secondary-light">: <%= order.teacher_id?.gender ?? "N/A" %></span>
+                                </div>  
+                            </div>
+                            <%  }else{ %>
+                                <p>No Teacher Assigned</p>
+                            <%  } %>
+
+                            <br>
+                            <form method="POST" action="/order/online-course-order/assign-teacher-in-online-course-order">
+                                <input type="hidden" value="<%= order._id %>" name="online_order_id">
+                            <div class="row"> 
+                            <div class="col-xxl-5 col-xl-5 col-sm-5">
+                                    <div class="">
+                                        <label for="order_status"
+                                            class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Assign Teacher 
+                                        <span class="text-danger-600">*</span> </label>
+                                        <select id="teacher" name="teacher_id" class="form-control form-select" required>
+                                            <option value="">--Select--</option>
+                                            <% teachers.forEach((teacher, index) => { %>
+                                               <option value="<%= teacher._id %>" 
+                                                    <%= order.teacher_id && teacher._id.toString() === order.teacher_id._id.toString() ? 'selected' : '' %>>
+                                                    <%= teacher.name %>
+                                                </option>
+                                            <% }) %> 
+                                        </select>
+                                    </div>
+                                </div>
+                                    <div class="col-xxl-2 col-xl-2 col-sm-2">
+                                        <label for="payment_status" class="text-sm fw-semibold text-primary-light d-inline-block mb-8"> Action </label>
+                                        <button class="btn btn-primary" type="submit">Assign</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div> 
+                        
+                    </div>
+                    
+                </div>
+            </div>
+             
+        </div>
+    </div>
+<%
+script = `
+
+`;
+%>

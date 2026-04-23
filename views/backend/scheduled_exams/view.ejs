@@ -1,0 +1,109 @@
+<div class="dashboard-main-body">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb d-flex justify-content-between mb-3">
+        <div>
+            <h6 class="text-primary">Scheduled Exam</h6>
+            <a href="/dashboard">Dashboard</a> /
+            <a href="/scheduled-exams">Scheduled Exam</a> /
+            <span>View Detail</span>
+        </div>
+    </div> 
+        <div class="row"> 
+            <div class="col-12">
+                <div class="card mb-3">
+                    <div class="card-header"><b>Exam Details</b></div>
+                    <div class="card-body"> 
+                        <div class="row"> 
+                            <div class="col-md-6">
+                                <label>Title</label>
+                               <p><b><%= exam.title ?? "N/A" %></b></p>
+                            </div> 
+                            <div class="col-md-2">
+                                <label>Duration (Minutes)</label>
+                                  <p><b><%= exam.duration %> min</b></p>
+                            </div> 
+                            <div class="col-md-2">
+                                <label>Total Que. </label>
+                               <p><b><%= exam.questions?.length %></b></p>
+                            </div>   
+                        </div>
+                        
+                    </div>
+                </div>
+            </div> 
+            
+            <div class="col-12">
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between">
+                        <b>Questions</b> 
+                    </div>  
+                    <div class="card-body" id="questionsContainer"> 
+                                <div class="card shadow-sm mb-3 question-block">
+                                    <% exam.questions?.forEach((que, index) => { %>
+                                        <div class="card-body mt-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="fw-bold mb-0">
+                                                Q<%= index+1 %>.  <span class="question-text"><%= que.question ?? "" %></span> 
+                                            </h6> 
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6 mb-2">
+                                                <div class="p-10 mb-1 rounded border">
+                                                    <strong>A.</strong>
+                                                    <span class="option-text"><%= que.option_a ?? "" %></span> 
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <div class="p-10 mb-1 rounded border">
+                                                    <strong>B.</strong>
+                                                    <span class="option-text"><%= que.option_b ?? "" %></span> 
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <div class="p-10 mb-1 rounded border">
+                                                    <strong>C.</strong>
+                                                    <span class="option-text"><%= que.option_c ?? "" %></span> 
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <div class="p-10 mb-1 rounded border">
+                                                    <strong>D.</strong>
+                                                    <span class="option-text"><%= que.option_d ?? "" %> </span> 
+                                                </div>
+                                            </div> 
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-3">
+                                            <div>
+                                                <span class="badge bg-primary">
+                                                    Correct Answer: <span class="correct-answer"><%= que.correct_answer %></span>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-info text-dark">
+                                                    Marks: <span class="marks"><%= que.marks ?? "" %></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <%  }) %>
+
+                                    
+
+
+
+                                </div>  
+                    </div>
+                </div>
+            </div>  
+            
+        </div> 
+</div>
+
+ 
+
+<%
+script = `
+    
+`;
+%>

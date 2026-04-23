@@ -1,0 +1,86 @@
+
+<div class="dashboard-main-body">
+    <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+    <div class="">
+        <h1 class="fw-semibold mb-4 h6 text-primary-light">All Online Course Order</h1>
+        <div class="">
+            <a href="/dashboard" class="text-secondary-light hover-text-primary hover-underline">Dashboard </a>
+            <span class="text-secondary-light">/ All Online Course Order</span>
+        </div>
+        </div>
+        </div>
+    <div class="mt-24">
+        <div class="card h-100">
+            <div class="card-body dataTable-wrapper p-0"> 
+                <div class="d-flex flex-wrap justify-content-between gap-16 px-20 py-12 border-bottom border-neutral-200">
+                        <form class="navbar-search dt-search m-0">
+                            <input type="text" class="dt-input bg-transparent radius-4" aria-controls="dataTable"
+                                name="search" placeholder="Search...">
+                            <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+                        </form>
+                        <div class="d-flex align-items-center gap-8 text-secondary-light">
+                            <span class="">
+                                Rows per page:
+                            </span>
+                            <div class="dt-length">
+                                <select name="dataTable_length" aria-controls="dataTable"
+                                    class="dt-input form-control form-select">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                <div class="p-0">
+                    <table class="table data-table" id="" data-page-length='10'>       
+                        <thead>
+                            <tr>
+                                <th scope="col"> S.L </th>
+                                <th scope="col">Order No.</th>
+                                <th scope="col">Course</th>
+                                <th scope="col">Student</th> 
+                                <th scope="col">Assigned Teacher</th> 
+                                <th scope="col">Order Date</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>  
+                            <% orders.forEach((order, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><span class="text-primary-600"><a href="/order/online-course-order/view/<%= order._id %>">#<%= order.order_id?.order_number ?? "N/A" %></a></span></td>
+                                <td><%= order.course_id?.name ?? "N/A" %></td>
+                                <td><span class="text-primary-600"><a href="/student/view/<%= order.student_id?._id %>"><%= order.student_id?.name %></a></span></td> 
+                                <td><span class="text-primary-600"><a href="/teacher/view/<%= order.teacher_id?._id %>"><%= order.teacher_id?.name %></a></span></td> 
+                                <td><%= new Date(order.order_id?.createdAt).toLocaleDateString('en-IN', {
+                                        day: '2-digit',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    }) %></td>
+                                    <td>
+                                    <div class="d-flex"> 
+                                        <a href="/order/online-course-order/view/<%= order._id %>"
+                                            title="View Order Detail"
+                                            class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex justify-content-center gap-2 py-6">
+                                           <i class="ri-eye-line"></i>
+                                        </a> 
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }) %> 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%
+script = `
+
+`;
+%>
