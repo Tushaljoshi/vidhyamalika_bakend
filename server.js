@@ -13,7 +13,11 @@ const apiRoute = require("./routes/api")
 
 const app = express();
 connectDB();
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 /* ---------- Middleware ---------- */
 app.use(express.urlencoded({extended:true}));
@@ -31,14 +35,19 @@ app.set("layout", "layout/main");
 
 /* ---------- Session Setup ---------- */
 app.use(
-    session({
-        secret:"adminSecret",
-        resave:false,
-        saveUninitialized: false,
-        store: MongoStore.create({
-            mongoUrl: process.env.MONGO_URI,
-        }),
-    })
+  session({
+    secret: "adminSecret",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+    }),
+    cookie: {
+      secure: false, // true in production (https)
+      httpOnly: true,
+      sameSite: "lax",
+    },
+  })
 );
 /* ---------- Flash ---------- */
 app.use(flash());
