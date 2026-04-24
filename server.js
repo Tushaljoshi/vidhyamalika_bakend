@@ -1,5 +1,4 @@
 require("dotenv").config();
-
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
@@ -10,9 +9,13 @@ const cors = require('cors');
 const connectDB = require("./config/db");
 const backendRoute = require("./routes/backend")
 const apiRoute = require("./routes/api")
+const createDefaultAdmin = require("./seeder/seedAdmin");
 
 const app = express();
-connectDB();
+connectDB().then(() => {
+  console.log("Database Connected");
+  createDefaultAdmin();
+});
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],

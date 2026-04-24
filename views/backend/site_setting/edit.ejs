@@ -1,147 +1,197 @@
+<div class="dashboard-main-body">
 
-    <div class="dashboard-main-body">
-
-        <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-  <div class="">
-    <h1 class="fw-semibold mb-4 h6 text-primary-light">Edit Site Setting</h1>
-    <div class="">
-      <a href="/dashboard" class="text-secondary-light hover-text-primary hover-underline">Dashboard </a>
-      <span class="text-secondary-light">/ Edit Site Setting</span>
+    <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+        <div class="">
+            <h1 class="fw-semibold mb-4 h6 text-primary-light">Edit Site Setting</h1>
+            <div class="">
+                <a href="/dashboard" class="text-secondary-light hover-text-primary hover-underline">Dashboard </a>
+                <span class="text-secondary-light">/ Edit Site Setting</span>
+            </div>
+        </div>
     </div>
-  </div> 
-</div>
 
-        <form class="mt-24" method="POST" action="/site-setting/update" enctype="multipart/form-data">
-            <div class="row gy-3">
-                <div class="col-lg-12">
-                    <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-                        <div
-                            class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-                            <h6 class="text-lg fw-semibold mb-0">Website Detail</h6>
-                        </div>
-                        <div class="card-body p-20">
-                            <div class="row gy-3">
-                                <div class="col-xxl-6 col-xl-6 col-sm-6">
-                                    <div class="">
-                                        <label for="site_name" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Site Name <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="site_name" value="<%= site_detail.site_name || '' %>" name="site_name" name="site_name" placeholder="Enter Site Name" required>
-                                    </div>
-                                </div>  
-                                <div class="col-xxl-6 col-xl-6 col-sm-6">
-                                    <div class="">
-                                        <label for="website" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Website URL <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="website"  value="<%= site_detail.website || '' %>" name="website" placeholder="Enter Website URL" required>
-                                    </div>
-                                </div>  
-                                <div class="col-xxl-6 col-xl-6 col-sm-6">
-                                    <div class="">
-                                        <label for="logo" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Upload Logo<span class="text-danger-600">*</span> </label>
-                                         <% if(site_detail.logo){ %>
-                                            <div class="mb-2">
-                                                <img src="<%= site_detail.logo %>" alt="logo" width="120" style="border:1px solid #ddd; padding:5px;">
-                                            </div>
+    <form class="mt-24" method="POST" action="/site-setting/update" enctype="multipart/form-data">
+        <div class="row gy-3">
+            <div class="col-lg-12">
+                <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+                    <div
+                        class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                        <h6 class="text-lg fw-semibold mb-0">Website Detail</h6>
+                    </div>
+                    <div class="card-body p-20">
+                        <div class="row gy-3">
+                            <div class="col-xxl-6 col-xl-6 col-sm-6">
+                                <div class="">
+                                    <label for="site_name"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Site Name
+                                        <span class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="site_name"
+                                        value="<%= site_detail.site_name || '' %>" name="site_name" name="site_name"
+                                        placeholder="Enter Site Name" required>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-sm-6">
+                                <div class="">
+                                    <label for="website"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Website URL
+                                        <span class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="website"
+                                        value="<%= site_detail.website || '' %>" name="website"
+                                        placeholder="Enter Website URL" required>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-sm-6">
+                                <div class="">
+                                    <label for="logo"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Upload
+                                        Logo<span class="text-danger-600">*</span> </label>
+                                    <% if(site_detail.logo){ %>
+                                        <div class="mb-2">
+                                            <img src="<%= site_detail.logo %>" alt="logo" width="120"
+                                                style="border:1px solid #ddd; padding:5px;">
+                                        </div>
                                         <% } %>
-                                        <input type="file" class="form-control" id="logo" name="logo" accept=".jpg,.jpeg,.png">
-                                    </div>
-                                </div> 
-                                <div class="col-xxl-6 col-xl-6 col-sm-6">
-                                    <div class="">
-                                        <label for="favicon" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Upload Favicon<span class="text-danger-600">*</span> </label>
-                                         <% if(site_detail.favicon){ %>
-                                            <div class="mb-2">
-                                                <img src="<%= site_detail.favicon %>" alt="favicon" width="50" style="border:1px solid #ddd; padding:5px;">
-                                            </div>
+                                            <input type="file" class="form-control" id="logo" name="logo"
+                                                accept=".jpg,.jpeg,.png">
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-sm-6">
+                                <div class="">
+                                    <label for="favicon"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Upload
+                                        Favicon<span class="text-danger-600">*</span> </label>
+                                    <% if(site_detail.favicon){ %>
+                                        <div class="mb-2">
+                                            <img src="<%= site_detail.favicon %>" alt="favicon" width="50"
+                                                style="border:1px solid #ddd; padding:5px;">
+                                        </div>
                                         <% } %>
-                                        <input type="file" class="form-control" id="favicon" name="favicon" accept=".jpg,.jpeg,.png">
-                                    </div>
-                                </div> 
+                                            <input type="file" class="form-control" id="favicon" name="favicon"
+                                                accept=".jpg,.jpeg,.png">
+                                </div>
+                            </div>
 
-                                <div class="col-xxl-6 col-xl-6 col-sm-6">
-                                    <div class="">
-                                        <label for="phone_primary" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Primary Phone <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="phone_primary" value="<%= site_detail.phone_primary || '' %>" name="phone_primary" placeholder="Enter Primary Phone Number" required>
-                                    </div>
-                                </div>  
-                                <div class="col-xxl-6 col-xl-6 col-sm-6">
-                                    <div class="">
-                                        <label for="phone_secondary" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Secondary Phone <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="phone_secondary"  value="<%= site_detail.phone_secondary || '' %>" name="phone_secondary" placeholder="Enter Secondary Phone Number">
-                                    </div>
-                                </div>  
-                                <div class="col-xxl-6 col-xl-6 col-sm-6">
-                                    <div class="">
-                                        <label for="email_primary" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Primary Email <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="email_primary"  value="<%= site_detail.email_primary || '' %>" name="email_primary" placeholder="Enter Primary Email" required>
-                                    </div>
-                                </div>  
-                                <div class="col-xxl-6 col-xl-6 col-sm-6">
-                                    <div class="">
-                                        <label for="email_secondary" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Secondary Email <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="email_secondary"  value="<%= site_detail.email_secondary || '' %>" name="email_secondary" placeholder="Enter Secondary Email">
-                                    </div>
-                                </div>  
-                                <div class="col-xxl-12 col-xl-12 col-sm-12">
-                                    <div class="">
-                                        <label for="footer_text" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Footer Text <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="footer_text"  value="<%= site_detail.footer_text || '' %>" name="footer_text" placeholder="Enter Footer Text" required>
-                                    </div>
-                                </div>  
-                                <div class="col-xxl-12 col-xl-12 col-sm-12">
-                                    <div class="">
-                                        <label for="address" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Address <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="address"  value="<%= site_detail.address || '' %>" name="address" placeholder="Enter Address" required>
-                                    </div>
-                                </div>  
-                                <div class="col-xxl-12 col-xl-12 col-sm-12">
-                                    <div class="">
-                                        <label for="disclaimer" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Disclaimer<span class="text-danger-600">*</span> </label>
-                                        <textarea class="form-control" id="disclaimer" name="disclaimer" placeholder="Enter Disclaimer"><%= site_detail.disclaimer || '' %></textarea>
-                                    </div>
-                                </div>  
+                            <div class="col-xxl-6 col-xl-6 col-sm-6">
+                                <div class="">
+                                    <label for="phone_primary"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Primary Phone
+                                        <span class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="phone_primary"
+                                        value="<%= site_detail.phone_primary || '' %>" name="phone_primary"
+                                        placeholder="Enter Primary Phone Number" required>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-sm-6">
+                                <div class="">
+                                    <label for="phone_secondary"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Secondary
+                                        Phone <span class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="phone_secondary"
+                                        value="<%= site_detail.phone_secondary || '' %>" name="phone_secondary"
+                                        placeholder="Enter Secondary Phone Number">
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-sm-6">
+                                <div class="">
+                                    <label for="email_primary"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Primary Email
+                                        <span class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="email_primary"
+                                        value="<%= site_detail.email_primary || '' %>" name="email_primary"
+                                        placeholder="Enter Primary Email" required>
+                                </div>
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-sm-6">
+                                <div class="">
+                                    <label for="email_secondary"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Secondary
+                                        Email <span class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="email_secondary"
+                                        value="<%= site_detail.email_secondary || '' %>" name="email_secondary"
+                                        placeholder="Enter Secondary Email">
+                                </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-sm-12">
+                                <div class="">
+                                    <label for="footer_text"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Footer Text
+                                        <span class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="footer_text"
+                                        value="<%= site_detail.footer_text || '' %>" name="footer_text"
+                                        placeholder="Enter Footer Text" required>
+                                </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-sm-12">
+                                <div class="">
+                                    <label for="address"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Address <span
+                                            class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="address"
+                                        value="<%= site_detail.address || '' %>" name="address"
+                                        placeholder="Enter Address" required>
+                                </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-12 col-sm-12">
+                                <div class="">
+                                    <label for="disclaimer"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Disclaimer<span
+                                            class="text-danger-600">*</span> </label>
+                                    <textarea class="form-control" id="disclaimer" name="disclaimer"
+                                        placeholder="Enter Disclaimer"><%= site_detail.disclaimer || '' %></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12">
-                    <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-                        <div
-                            class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-                            <h6 class="text-lg fw-semibold mb-0">SEO </h6>
-                        </div>
-                        <div class="card-body p-20"> 
-                            <div class="row">
-                             <div class="col-md-12">
-                                <div class="">
-                                        <label for="meta_title" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Meta Title <span class="text-danger-600">*</span> </label>
-                                        <input type="text" class="form-control" id="meta_title"  value="<%= site_detail.meta_title || '' %>" name="meta_title" placeholder="Enter Meta Title">
-                                    </div>
-                             </div>
-                             <div class="col-md-6 mt-3">
-                                <div class="">
-                                        <label for="meta_keyword" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Meta Keyword <span class="text-danger-600">*</span> </label>
-                                        <textarea class="form-control" id="meta_keyword" name="meta_keyword" placeholder="Enter Meta Keyword"><%= site_detail.meta_keyword || '' %></textarea>
-                                    </div>
-                             </div>
-                             <div class="col-md-6 mt-3">
-                                <div class="">
-                                        <label for="meta_description" class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Meta Description <span class="text-danger-600">*</span> </label>
-                                        <textarea type="text" class="form-control" id="meta_description" name="meta_description" placeholder="Enter Meta Description"><%= site_detail.meta_description || '' %></textarea>
-                                    </div>
-                             </div>
-                             </div>
-                        </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+                    <div
+                        class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                        <h6 class="text-lg fw-semibold mb-0">SEO </h6>
                     </div>
-                </div>
-                <div class="col-12">
-                    <div class="d-flex align-items-center justify-content-center gap-3 mt-8"> 
-                        <button type="submit" class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8">Update</button>
+                    <div class="card-body p-20">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="">
+                                    <label for="meta_title"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Meta Title
+                                        <span class="text-danger-600">*</span> </label>
+                                    <input type="text" class="form-control" id="meta_title"
+                                        value="<%= site_detail.meta_title || '' %>" name="meta_title"
+                                        placeholder="Enter Meta Title">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <div class="">
+                                    <label for="meta_keyword"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Meta Keyword
+                                        <span class="text-danger-600">*</span> </label>
+                                    <textarea class="form-control" id="meta_keyword" name="meta_keyword"
+                                        placeholder="Enter Meta Keyword"><%= site_detail.meta_keyword || '' %></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <div class="">
+                                    <label for="meta_description"
+                                        class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Meta
+                                        Description <span class="text-danger-600">*</span> </label>
+                                    <textarea type="text" class="form-control" id="meta_description"
+                                        name="meta_description"
+                                        placeholder="Enter Meta Description"><%= site_detail.meta_description || '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
-<%
-script = `
-    
-`;
-%>
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-center gap-3 mt-8">
+                    <button type="submit"
+                        class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8">Update</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<% script=` `; %>

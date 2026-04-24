@@ -95,33 +95,48 @@ exports.teacherDashboard = async (req, res) => {
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, phone, password } = req.body;
+        const {
+            name,
+            email,
+            phone,
+            password,
+            qualification,
+            experience,
+            subjects,
+            classes,
+            availability
+        } = req.body;
+
         if (!name || !email || !phone || !password) {
             return res.status(400).json({
                 status: false,
                 message: "All fields (name, email, phone, password) are required"
             });
         }
+
         const trimmedName = name.trim();
+
         if (!validator.isLength(trimmedName, { min: 2, max: 50 })) {
             return res.status(400).json({
                 status: false,
                 message: "Name must be between 2 and 50 characters"
             });
         }
+
         if (!validator.isAlpha(trimmedName.replace(/\s/g, ""))) {
             return res.status(400).json({
                 status: false,
                 message: "Name must contain only letters"
             });
         }
+
         if (!validator.isEmail(email)) {
             return res.status(400).json({
                 status: false,
                 message: "Invalid email format"
             });
         }
-        // const normalizedEmail = validator.normalizeEmail(email);
+
         const normalizedEmail = validator.normalizeEmail(email, {
             gmail_remove_dots: false
         });
@@ -132,6 +147,7 @@ exports.register = async (req, res) => {
                 message: "Invalid Indian phone number"
             });
         }
+
         if (!validator.isStrongPassword(password, {
             minLength: 6,
             minLowercase: 1,
@@ -141,26 +157,37 @@ exports.register = async (req, res) => {
         })) {
             return res.status(400).json({
                 status: false,
-                message: "Password must be at least 6 characters and include uppercase, lowercase, and number"
+                message: "Weak password"
             });
         }
+
         const existingUser = await User.findOne({
             $or: [{ email: normalizedEmail }, { phone }]
         });
+
         if (existingUser) {
             return res.status(400).json({
                 status: false,
                 message: "Email or Phone already exists"
             });
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
+
         const user = await User.create({
             name: trimmedName,
             email: normalizedEmail,
             phone,
-            user_role: 1,
-            password: hashedPassword
+            password: hashedPassword,
+            user_role: 1, //Teacher
+
+            qualification,
+            experience,
+            subjects,
+            classes,
+            availability
         });
+
         const token = jwt.sign(
             {
                 id: user._id,
@@ -169,8 +196,10 @@ exports.register = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
+
         const userData = user.toObject();
         delete userData.password;
+
         return res.status(201).json({
             status: true,
             message: "Teacher registered successfully",
@@ -179,10 +208,10 @@ exports.register = async (req, res) => {
             user_role: "teacher",
             user_role_id: user.user_role,
         });
+
     } catch (error) {
         console.error("Register Error:", error.message);
         return res.status(500).json({
-
             status: false,
             message: "Server error"
         });
