@@ -71,6 +71,7 @@ router.post("/update-profile", ApiAuthMiddleware, ProfileApiController.updatePro
 
 router.post("/teacher/add-availability", ApiAuthMiddleware, TeacherApiController.addTeacherAvailability);
 router.get("/teacher/availability/:teacherId", ApiAuthMiddleware, TeacherApiController.getTeacherAvailability);
+router.get("/teachers/available-slots", TeacherApiController.getAllAvailableSlots);
 router.get("/teacher/orders", ApiAuthMiddleware, TeacherApiController.orders);
 router.get("/teacher/get-online-course-orders", ApiAuthMiddleware, OrderApiController.getOnlineCourseOrderForTeacher);
 router.get("/teacher/live-sessions", ApiAuthMiddleware, TeacherApiController.liveSessions);

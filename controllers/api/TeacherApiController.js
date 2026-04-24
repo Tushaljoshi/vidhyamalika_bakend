@@ -361,6 +361,64 @@ exports.getTeacherAvailability = async (req, res) => {
     }
 };
 
+exports.getAllAvailableSlots = async (req, res) => {
+    try {
+        const { day, subject, className } = req.query;
+
+        // Step 1: Get all teachers
+        const teachers = await User.find({ user_role: 1 })
+            .select("name email weekly_availability");
+
+        let result = [];
+
+        // Step 2: Loop teachers
+        teachers.forEach((teacher) => {
+            if (!teacher.weekly_availability) return;
+
+            teacher.weekly_availability.forEach((dayObj) => {
+
+                // Filter by day (optional)
+                if (day && dayObj.day !== day) return;
+
+                const filteredSlots = dayObj.slots.filter((slot) => {
+
+                    // Filter subject
+                    if (subject && slot.subject !== subject) return false;
+
+                    // Filter class
+                    if (className && slot.class !== className) return false;
+
+                    return true;
+                });
+
+                if (filteredSlots.length > 0) {
+                    result.push({
+                        teacherId: teacher._id,
+                        teacherName: teacher.name,
+                        email: teacher.email,
+                        day: dayObj.day,
+                        slots: filteredSlots
+                    });
+                }
+            });
+        });
+
+        return res.status(200).json({
+            status: true,
+            message: "Available slots fetched successfully",
+            total: result.length,
+            data: result
+        });
+
+    } catch (error) {
+        console.error("Get Slots Error:", error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Server error"
+        });
+    }
+};
+
 exports.orders = async (req, res) => {
     try{
         const teacher_id = req.user?.id;
