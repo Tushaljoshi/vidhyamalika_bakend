@@ -3,7 +3,7 @@ const User = require("../../models/User");
 
 exports.getProfile = async (req, res) => {
     try {
-        // ✅ 1. Check auth
+        // 1. Check auth
         const user_id = req.user?.id;
         if (!user_id) {
             return res.status(401).json({
@@ -12,7 +12,7 @@ exports.getProfile = async (req, res) => {
             });
         }
 
-        // ✅ 2. Validate ObjectId
+        // 2. Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(user_id)) {
             return res.status(400).json({
                 status: false,
@@ -20,7 +20,7 @@ exports.getProfile = async (req, res) => {
             });
         }
 
-        // ✅ 3. Fetch user
+        // 3. Fetch user
         const user_data = await User.findById(user_id).select("-password");
 
         // ✅ 4. Check user exists
@@ -61,7 +61,7 @@ exports.updateProfile = async (req, res) => {
             });
         }
 
-        // ✅ 2. Validate ObjectId
+        // 2. Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(user_id)) {
             return res.status(400).json({
                 status: false,
@@ -69,17 +69,18 @@ exports.updateProfile = async (req, res) => {
             });
         }
 
-        const { name, email, phone } = req.body;
+        const { name, email, phone, ...rest } = req.body;
 
-        // ✅ 3. At least one field required
-        if (!name && !email && !phone && !req.file) {
+        const hasBodyData = Object.keys(req.body).length > 0;
+
+        if (!hasBodyData && !req.file) {
             return res.status(400).json({
                 status: false,
                 message: "At least one field is required to update"
             });
         }
 
-        // ✅ 4. Email validation
+        // 4. Email validation
         if (email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
@@ -89,7 +90,7 @@ exports.updateProfile = async (req, res) => {
                 });
             }
 
-            // ✅ Check duplicate email
+            // Check duplicate email
             const existingEmail = await User.findOne({ email, _id: { $ne: user_id } });
             if (existingEmail) {
                 return res.status(400).json({
@@ -99,7 +100,7 @@ exports.updateProfile = async (req, res) => {
             }
         }
 
-        // ✅ 5. Phone validation (India standard)
+        // 5. Phone validation (India standard)
         if (phone) {
             const phoneRegex = /^[6-9]\d{9}$/;
             if (!phoneRegex.test(phone)) {
@@ -118,26 +119,44 @@ exports.updateProfile = async (req, res) => {
             }
         }
 
-        // ✅ 6. Prepare update object
+        // 6. Prepare update object
         let updateData = {};
 
         if (name) updateData.name = name;
         if (email) updateData.email = email;
         if (phone) updateData.phone = phone;
+        const blockedFields = ["password", "role", "isAdmin", "_id"];
 
-        // ✅ 7. Handle photo upload
+        if (rest && Object.keys(rest).length > 0) {
+            for (let key in rest) {
+
+                // sensitive fields skip
+                if (blockedFields.includes(key)) continue;
+
+                let value = rest[key];
+
+                // Date auto convert
+                if (key.toLowerCase().includes("date") || key === "dob") {
+                    value = new Date(value);
+                }
+
+                updateData[key] = value;
+            }
+        }
+
+        // 7. Handle photo upload
         if (req.file) {
             updateData.photo = req.file.path; // or your full URL logic
         }
 
-        // ✅ 8. Update user
+        // 8. Update user
         const updatedUser = await User.findByIdAndUpdate(
             user_id,
             { $set: updateData },
             { new: true }
         ).select("-password");
 
-        // ✅ 9. Check user exists
+        //9. Check user exists
         if (!updatedUser) {
             return res.status(404).json({
                 status: false,

@@ -265,6 +265,61 @@ exports.login = async (req, res) => {
     }
 };
 
+exports.addTeacherAvailability = async (req, res) => {
+    try {
+        const { teacherId, weekly_availability } = req.body;
+
+        if (!teacherId || !weekly_availability) {
+            return res.status(400).json({
+                status: false,
+                message: "teacherId and availability are required"
+            });
+        }
+
+        const teacher = await User.findById(teacherId);
+
+        if (!teacher || teacher.user_role !== 1) {
+            return res.status(404).json({
+                status: false,
+                message: "Teacher not found"
+            });
+        }
+
+        // OPTIONAL: validate days
+        const validDays = [
+            "Monday", "Tuesday", "Wednesday",
+            "Thursday", "Friday", "Saturday", "Sunday"
+        ];
+
+        for (let dayObj of weekly_availability) {
+            if (!validDays.includes(dayObj.day)) {
+                return res.status(400).json({
+                    status: false,
+                    message: `Invalid day: ${dayObj.day}`
+                });
+            }
+        }
+
+        // Save / overwrite availability
+        teacher.weekly_availability = weekly_availability;
+
+        await teacher.save();
+
+        return res.status(200).json({
+            status: true,
+            message: "Availability updated successfully",
+            data: teacher.weekly_availability
+        });
+
+    } catch (error) {
+        console.error("Availability Error:", error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Server error"
+        });
+    }
+};
+
 exports.orders = async (req, res) => {
     try{
         const teacher_id = req.user?.id;
