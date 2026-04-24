@@ -320,6 +320,47 @@ exports.addTeacherAvailability = async (req, res) => {
     }
 };
 
+exports.getTeacherAvailability = async (req, res) => {
+    try {
+        const { teacherId } = req.params;
+
+        if (!teacherId) {
+            return res.status(400).json({
+                status: false,
+                message: "teacherId is required"
+            });
+        }
+
+        const teacher = await User.findById(teacherId)
+            .select("name email weekly_availability user_role");
+
+        if (!teacher || teacher.user_role !== 1) {
+            return res.status(404).json({
+                status: false,
+                message: "Teacher not found"
+            });
+        }
+
+        return res.status(200).json({
+            status: true,
+            message: "Availability fetched successfully",
+            data: {
+                teacherId: teacher._id,
+                name: teacher.name,
+                email: teacher.email,
+                availability: teacher.weekly_availability || []
+            }
+        });
+
+    } catch (error) {
+        console.error("Get Availability Error:", error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Server error"
+        });
+    }
+};
+
 exports.orders = async (req, res) => {
     try{
         const teacher_id = req.user?.id;
