@@ -1,4 +1,20 @@
 const mongoose = require("mongoose");
+
+const weeklyAvailabilitySchema = new mongoose.Schema({
+    day: {
+        type: String,
+        required: true
+    },
+    slots: [
+        {
+            subject: String,
+            class: String,
+            startTime: String,
+            endTime: String
+        }
+    ]
+}, { _id: false });
+
 const UserSchema = new mongoose.Schema({
     name: String,
 
@@ -22,7 +38,6 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
 
-    // NEW FIELDS FOR TEACHER
     qualification: String,
     experience: String,
     gender: String,
@@ -30,9 +45,11 @@ const UserSchema = new mongoose.Schema({
     age: Number,
     address: String,
 
+    weekly_availability: [weeklyAvailabilitySchema],
+
     user_role: {
         type: Number,
-        default: 2, // 1 Teacher, 2 Student
+        default: 2,
     },
 
     account_status: {

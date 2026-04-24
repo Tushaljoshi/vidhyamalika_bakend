@@ -22,6 +22,7 @@ const CourseFeedbackApiController = require("../controllers/api/CourseFeedbackAp
 const OtherPageApiController = require("../controllers/api/OtherPageApiController");
 const DoubtSessionApiController = require("../controllers/api/DoubtSessionApiController");
 const ForgetPasswordApiController = require("../controllers/api/ForgetPasswordApiController");
+
  
 
 router.post("/student/register", StudentApiController.register);
@@ -68,7 +69,7 @@ router.get("/recorded-course-test-attempt", ApiAuthMiddleware, RecordedCourseTes
 router.get("/get-profile", ApiAuthMiddleware, ProfileApiController.getProfile);
 router.post("/update-profile", ApiAuthMiddleware, ProfileApiController.updateProfile);
 
-
+router.post("/teacher/add-availability", ApiAuthMiddleware, TeacherApiController.addTeacherAvailability);
 router.get("/teacher/orders", ApiAuthMiddleware, TeacherApiController.orders);
 router.get("/teacher/get-online-course-orders", ApiAuthMiddleware, OrderApiController.getOnlineCourseOrderForTeacher);
 router.get("/teacher/live-sessions", ApiAuthMiddleware, TeacherApiController.liveSessions);
