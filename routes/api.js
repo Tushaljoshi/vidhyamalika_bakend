@@ -70,6 +70,7 @@ router.get("/get-profile", ApiAuthMiddleware, ProfileApiController.getProfile);
 router.post("/update-profile", ApiAuthMiddleware, ProfileApiController.updateProfile);
 
 router.post("/teacher/add-availability", ApiAuthMiddleware, TeacherApiController.addTeacherAvailability);
+router.post("/teacher/settings", ApiAuthMiddleware, TeacherApiController.saveTeacherSettings);
 router.get("/teacher/availability/:teacherId", ApiAuthMiddleware, TeacherApiController.getTeacherAvailability);
 router.get("/teachers/available-slots", TeacherApiController.getAllAvailableSlots);
 router.get("/teacher/orders", ApiAuthMiddleware, TeacherApiController.orders);

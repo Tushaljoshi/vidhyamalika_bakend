@@ -45,6 +45,16 @@ const UserSchema = new mongoose.Schema({
     age: Number,
     address: String,
 
+    teaching_settings: {
+        session_duration: Number,
+        break_between_sessions: Number,
+        earliest_start_time: String,
+        latest_end_time: String,
+        max_sessions_per_day: Number,
+        subjects: [String],
+        classes: [String]
+    },
+
     weekly_availability: [weeklyAvailabilitySchema],
 
     user_role: {

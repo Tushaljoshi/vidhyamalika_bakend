@@ -12,6 +12,33 @@ const { SendMail } = require("../../config/SendMail");
 const { StudentBatchAssignedEmail } = require("../../emails/StudentBatchAssignedEmail");
 const DoubtSession = require("../../models/DoubtSession");
 
+function generateSlots(settings) {
+    const {
+        session_duration,
+        break_between_sessions,
+        earliest_start_time,
+        latest_end_time
+    } = settings;
+
+    let slots = [];
+    let current = convertToMinutes(earliest_start_time);
+    const end = convertToMinutes(latest_end_time);
+
+    while (current + session_duration <= end) {
+        let start = formatTime(current);
+        let finish = formatTime(current + session_duration);
+
+        slots.push({
+            startTime: start,
+            endTime: finish
+        });
+
+        current += session_duration + break_between_sessions;
+    }
+
+    return slots;
+}
+
 
 exports.teacherDashboard = async (req, res) => {
     try {
@@ -320,6 +347,62 @@ exports.addTeacherAvailability = async (req, res) => {
     }
 };
 
+exports.saveTeacherSettings = async (req, res) => {
+    try {
+        const {
+            teacherId,
+            session_duration,
+            break_between_sessions,
+            earliest_start_time,
+            latest_end_time,
+            max_sessions_per_day,
+            subjects,
+            classes
+        } = req.body;
+
+        if (!teacherId) {
+            return res.status(400).json({
+                status: false,
+                message: "teacherId is required"
+            });
+        }
+
+        const teacher = await User.findById(teacherId);
+
+        if (!teacher || teacher.user_role !== 1) {
+            return res.status(404).json({
+                status: false,
+                message: "Teacher not found"
+            });
+        }
+
+        teacher.teaching_settings = {
+            session_duration,
+            break_between_sessions,
+            earliest_start_time,
+            latest_end_time,
+            max_sessions_per_day,
+            subjects,
+            classes
+        };
+
+        await teacher.save();
+
+        return res.status(200).json({
+            status: true,
+            message: "Settings saved successfully",
+            data: teacher.teaching_settings
+        });
+
+    } catch (error) {
+        console.error("Settings Error:", error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Server error"
+        });
+    }
+};
+
 exports.getTeacherAvailability = async (req, res) => {
     try {
         const { teacherId } = req.params;
@@ -332,7 +415,7 @@ exports.getTeacherAvailability = async (req, res) => {
         }
 
         const teacher = await User.findById(teacherId)
-            .select("name email weekly_availability user_role");
+            .select("name email weekly_availability teaching_settings user_role");
 
         if (!teacher || teacher.user_role !== 1) {
             return res.status(404).json({
@@ -348,7 +431,8 @@ exports.getTeacherAvailability = async (req, res) => {
                 teacherId: teacher._id,
                 name: teacher.name,
                 email: teacher.email,
-                availability: teacher.weekly_availability || []
+                availability: teacher.weekly_availability || [],
+                settings: teacher.teaching_settings || {}
             }
         });
 
