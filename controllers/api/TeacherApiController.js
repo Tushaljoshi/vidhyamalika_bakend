@@ -99,12 +99,11 @@ exports.register = async (req, res) => {
             name,
             email,
             phone,
+            gender,
             password,
             qualification,
             experience,
-            subjects,
-            classes,
-            availability
+            address,
         } = req.body;
 
         if (!name || !email || !phone || !password) {
@@ -178,14 +177,12 @@ exports.register = async (req, res) => {
             name: trimmedName,
             email: normalizedEmail,
             phone,
+            gender,
             password: hashedPassword,
             user_role: 1, //Teacher
-
             qualification,
             experience,
-            subjects,
-            classes,
-            availability
+            address,
         });
 
         const token = jwt.sign(
