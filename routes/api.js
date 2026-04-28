@@ -25,9 +25,10 @@ const ForgetPasswordApiController = require("../controllers/api/ForgetPasswordAp
 const controller = require("../controllers/api/subject.controller");
 const categories_controller = require("../controllers/api/mainCategory.controller");
 const SubCategorycontroller = require("../controllers/api/subCategory.controller");
+const Coursecontroller = require("../controllers/api/course.controller");
 const createUploader = require("../config/multer");
 const upload = createUploader("sub_category");
-
+const upload = createUploader("online_course");
 
  
 
@@ -160,5 +161,11 @@ router.get("/SubCategory/:id", SubCategorycontroller.getSubCategoryById);
 router.post("/SubCategory", upload.single("category_image"), SubCategorycontroller.createSubCategory);
 router.put("/SubCategory/:id", upload.single("category_image"), SubCategorycontroller.updateSubCategory);
 router.delete("/SubCategory/:id", SubCategorycontroller.deleteSubCategory);
+
+router.get("/Course", Coursecontroller.getCourses);
+router.get("/Course/:id", Coursecontroller.getCourseById);
+router.post("/Course", upload.single("thumbnail"), Coursecontroller.createCourse);
+router.put("/Course/:id", upload.single("thumbnail"), Coursecontroller.updateCourse);
+router.delete("/Course/:id", Coursecontroller.deleteCourse);
 
 module.exports = router;
