@@ -7,9 +7,22 @@ const slugify = require("slugify");
 exports.getSubCategories = async (req, res) => {
   try {
     const data = await SubCategory.find()
-      .populate("subject_id")
-      .populate("main_category_id")
-      .populate("teacher_id") // ✅ NEW
+      .populate({
+        path: "subject_id",
+        select: "name slug image status", // ✅ clean subject fields
+      })
+      .populate({
+        path: "main_category_id",
+        select: "name slug image status subject_id", // ✅ full main category
+        populate: {
+          path: "subject_id", // 🔥 nested populate (same as subject)
+          select: "name slug",
+        },
+      })
+      .populate({
+        path: "teacher_id",
+        select: "name email", // optional
+      })
       .sort({ created_at: -1 });
 
     return res.status(200).json({

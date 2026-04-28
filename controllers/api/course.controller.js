@@ -143,10 +143,11 @@ exports.createCourse = async (req, res) => {
   }
 };
 
-// ✅ UPDATE COURSE
 exports.updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
+
+    const body = req.body || {}; // ✅ safe fallback
 
     const {
       course_name,
@@ -161,8 +162,8 @@ exports.updateCourse = async (req, res) => {
       no_of_lesson,
       price,
       sale_price,
-      teacher_id, 
-    } = req.body;
+      teacher_id,
+    } = body; // ✅ FIXED HERE
 
     const course = await Course.findById(id);
 
@@ -173,7 +174,7 @@ exports.updateCourse = async (req, res) => {
       });
     }
 
-    // Slug update
+    // ✅ Slug update
     let slug = course.slug;
 
     if (course_name && course_name !== course.name) {
@@ -197,33 +198,35 @@ exports.updateCourse = async (req, res) => {
       }
     }
 
-    // Image update
+    // ✅ Image update
     let image_path = course.thumbnail;
     if (req.file) {
       image_path = `/uploads/online_course/${req.file.filename}`;
     }
 
-    const updated = await Course.findByIdAndUpdate(
-      id,
-      {
-        name: course_name,
-        short_description,
-        full_description,
-        curriculum,
-        slug,
-        subject_id: subject,
-        main_category_id: main_category,
-        sub_category_id: sub_category,
-        teacher_id, // UPDATE
-        language,
-        certificate,
-        total_no_of_lesson: no_of_lesson,
-        price,
-        sale_price,
-        thumbnail: image_path,
-      },
-      { new: true }
-    );
+    // ✅ Dynamic update
+    const updateData = {
+      slug,
+      thumbnail: image_path,
+    };
+
+    if (course_name) updateData.name = course_name;
+    if (short_description) updateData.short_description = short_description;
+    if (full_description) updateData.full_description = full_description;
+    if (curriculum) updateData.curriculum = curriculum;
+    if (subject) updateData.subject_id = subject;
+    if (main_category) updateData.main_category_id = main_category;
+    if (sub_category) updateData.sub_category_id = sub_category;
+    if (teacher_id) updateData.teacher_id = teacher_id;
+    if (language) updateData.language = language;
+    if (certificate) updateData.certificate = certificate;
+    if (no_of_lesson) updateData.total_no_of_lesson = no_of_lesson;
+    if (price) updateData.price = price;
+    if (sale_price) updateData.sale_price = sale_price;
+
+    const updated = await Course.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
 
     return res.status(200).json({
       success: true,
@@ -231,13 +234,13 @@ exports.updateCourse = async (req, res) => {
       data: updated,
     });
   } catch (error) {
+    console.error(error); // ✅ always log
     return res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
-
 // DELETE COURSE
 exports.deleteCourse = async (req, res) => {
   try {
