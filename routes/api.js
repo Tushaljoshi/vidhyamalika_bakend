@@ -24,7 +24,7 @@ const DoubtSessionApiController = require("../controllers/api/DoubtSessionApiCon
 const ForgetPasswordApiController = require("../controllers/api/ForgetPasswordApiController");
 const controller = require("../controllers/api/subject.controller");
 const categories_controller = require("../controllers/api/mainCategory.controller");
-const controller = require("../controllers/api/subCategory.controller");
+const SubCategorycontroller = require("../controllers/api/subCategory.controller");
 const createUploader = require("../config/multer");
 const upload = createUploader("sub_category");
 
@@ -155,11 +155,10 @@ router.delete("/:id", controller.deleteSubject);*/}
 router.get("/main-categories", categories_controller.getMainCategories);
 router.get("/main-categories/:id", categories_controller.getMainCategoryById);
 
-router.get("/", controller.getSubCategories);
-router.get("/:id", controller.getSubCategoryById);
-
-router.post("/", upload.single("category_image"), controller.createSubCategory);
-router.put("/:id", upload.single("category_image"), controller.updateSubCategory);
-router.delete("/:id", controller.deleteSubCategory);
+router.get("/SubCategory", SubCategorycontroller.getSubCategories);
+router.get("/SubCategory/:id", SubCategorycontroller.getSubCategoryById);
+router.post("/SubCategory", upload.single("category_image"), SubCategorycontroller.createSubCategory);
+router.put("/SubCategory/:id", upload.single("category_image"), SubCategorycontroller.updateSubCategory);
+router.delete("/SubCategory/:id", SubCategorycontroller.deleteSubCategory);
 
 module.exports = router;
