@@ -48,7 +48,7 @@ const CourseSchema = new mongoose.Schema({
         default: Date.now
     }
     }, {timestamps:true});
-    // 🔥 Reverse populate
+    // Reverse populate
     CourseSchema.virtual("videos", {
         ref: "RecoredCourseVideo",        // model name
         localField: "_id",          // Course ka field

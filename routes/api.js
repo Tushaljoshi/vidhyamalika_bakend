@@ -22,6 +22,12 @@ const CourseFeedbackApiController = require("../controllers/api/CourseFeedbackAp
 const OtherPageApiController = require("../controllers/api/OtherPageApiController");
 const DoubtSessionApiController = require("../controllers/api/DoubtSessionApiController");
 const ForgetPasswordApiController = require("../controllers/api/ForgetPasswordApiController");
+const controller = require("../controllers/api/subject.controller");
+const categories_controller = require("../controllers/api/mainCategory.controller");
+const controller = require("../controllers/api/subCategory.controller");
+const createUploader = require("../config/multer");
+const upload = createUploader("sub_category");
+
 
  
 
@@ -136,12 +142,24 @@ router.get("/teacher/get-course-feedback", ApiAuthMiddleware, CourseFeedbackApiC
 router.post("/teacher/create-announcement", ApiAuthMiddleware, AnnouncementApiController.createAnnouncement);
 
 
-
-
-
 router.post("/forgot-password", ForgetPasswordApiController.forgetPassword);
 router.post("/verify-otp", ForgetPasswordApiController.verifyOtp);
 router.post("/resend-otp", ForgetPasswordApiController.resendOtp);
 router.post("/change-password", ForgetPasswordApiController.changePassword);
+
+router.get("/subject", controller.getSubjects);
+{/*router.post("/", controller.createSubject);
+router.put("/:id", controller.updateSubject);
+router.delete("/:id", controller.deleteSubject);*/}
+
+router.get("/main-categories", categories_controller.getMainCategories);
+router.get("/main-categories/:id", categories_controller.getMainCategoryById);
+
+router.get("/", controller.getSubCategories);
+router.get("/:id", controller.getSubCategoryById);
+
+router.post("/", upload.single("category_image"), controller.createSubCategory);
+router.put("/:id", upload.single("category_image"), controller.updateSubCategory);
+router.delete("/:id", controller.deleteSubCategory);
 
 module.exports = router;

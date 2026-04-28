@@ -50,7 +50,7 @@ router.post("/reset-password", guestMiddleware, AdminController.changePassword);
 
 
 // Subject Routes
-router.get('/subject', authMiddleware, SubjectController.index);
+router.get('/subject', SubjectController.index);
 router.post('/subject/store', authMiddleware, upload("subjects").single("subject_image"), SubjectController.store);
 router.post('/subject/update', authMiddleware, upload("subjects").single("subject_image"), SubjectController.update);
 router.get("/subject/destroy/:id", authMiddleware, SubjectController.destroy);
