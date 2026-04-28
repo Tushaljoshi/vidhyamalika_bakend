@@ -161,7 +161,7 @@ exports.updateCourse = async (req, res) => {
       no_of_lesson,
       price,
       sale_price,
-      teacher_id, // ✅ NEW
+      teacher_id, 
     } = req.body;
 
     const course = await Course.findById(id);
@@ -214,7 +214,7 @@ exports.updateCourse = async (req, res) => {
         subject_id: subject,
         main_category_id: main_category,
         sub_category_id: sub_category,
-        teacher_id, // ✅ UPDATE
+        teacher_id, // UPDATE
         language,
         certificate,
         total_no_of_lesson: no_of_lesson,
@@ -238,7 +238,7 @@ exports.updateCourse = async (req, res) => {
   }
 };
 
-// ✅ DELETE COURSE
+// DELETE COURSE
 exports.deleteCourse = async (req, res) => {
   try {
     const { id } = req.params;

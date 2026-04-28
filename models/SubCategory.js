@@ -23,6 +23,10 @@ const SubCategorySchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    teacher_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User" // or Teacher model
+    },
     created_at: {
         type: Date,
         default: Date.now

@@ -19,7 +19,7 @@ const CourseSchema = new mongoose.Schema({
     price: Number,
     sale_price: Number,
     thumbnail: String,
-     slug: {
+    slug: {
         type: String,
         unique: false,
         required: true
@@ -34,7 +34,7 @@ const CourseSchema = new mongoose.Schema({
         required: false,
         ref: "MainCategory"
     },
-    sub_category_id : {
+    sub_category_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: false,
         ref: "SubCategory"
@@ -43,18 +43,22 @@ const CourseSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    teacher_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User" // or Teacher model
+    },
     created_at: {
         type: Date,
         default: Date.now
     }
-    }, {timestamps:true});
-    // Reverse populate
-    CourseSchema.virtual("videos", {
-        ref: "RecoredCourseVideo",        // model name
-        localField: "_id",          // Course ka field
-        foreignField: "course_id",  // CourseVideos ka field
-    });
-    // IMPORTANT
+}, { timestamps: true });
+// Reverse populate
+CourseSchema.virtual("videos", {
+    ref: "RecoredCourseVideo",        // model name
+    localField: "_id",          // Course ka field
+    foreignField: "course_id",  // CourseVideos ka field
+});
+// IMPORTANT
 CourseSchema.set("toObject", { virtuals: true });
 CourseSchema.set("toJSON", { virtuals: true });
 module.exports = mongoose.model("Course", CourseSchema, "courses");

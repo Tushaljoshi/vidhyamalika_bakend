@@ -9,6 +9,7 @@ exports.getSubCategories = async (req, res) => {
     const data = await SubCategory.find()
       .populate("subject_id")
       .populate("main_category_id")
+      .populate("teacher_id") // ✅ NEW
       .sort({ created_at: -1 });
 
     return res.status(200).json({
@@ -31,7 +32,8 @@ exports.getSubCategoryById = async (req, res) => {
 
     const data = await SubCategory.findById(id)
       .populate("subject_id")
-      .populate("main_category_id");
+      .populate("main_category_id")
+      .populate("teacher_id"); // ✅ NEW
 
     if (!data) {
       return res.status(404).json({
@@ -55,13 +57,13 @@ exports.getSubCategoryById = async (req, res) => {
 // ✅ CREATE
 exports.createSubCategory = async (req, res) => {
   try {
-    const { name, subject, main_category, status } = req.body;
+    const { name, subject, main_category, status, teacher_id } = req.body;
 
     // Validation
-    if (!name || !subject || !main_category) {
+    if (!name || !subject || !main_category || !teacher_id) {
       return res.status(400).json({
         success: false,
-        message: "Name, subject and main_category are required",
+        message: "Name, subject, main_category and teacher_id are required",
       });
     }
 
@@ -88,6 +90,7 @@ exports.createSubCategory = async (req, res) => {
       name,
       subject_id: subject,
       main_category_id: main_category,
+      teacher_id, // ✅ NEW
       image: image_path,
       slug,
       status: status === "active",
@@ -110,7 +113,7 @@ exports.createSubCategory = async (req, res) => {
 exports.updateSubCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, subject, main_category, status } = req.body;
+    const { name, subject, main_category, status, teacher_id } = req.body;
 
     const subCategory = await SubCategory.findById(id);
 
@@ -156,6 +159,7 @@ exports.updateSubCategory = async (req, res) => {
         name,
         subject_id: subject,
         main_category_id: main_category,
+        teacher_id, // ✅ NEW
         image: image_path,
         slug,
         status: status === "active",
