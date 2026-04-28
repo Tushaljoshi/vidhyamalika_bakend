@@ -8,7 +8,6 @@ exports.getCourses = async (req, res) => {
       .populate("subject_id")
       .populate("main_category_id")
       .populate("sub_category_id")
-      .populate("teacher_id") 
       .sort({ created_at: -1 });
 
     return res.status(200).json({
@@ -120,7 +119,7 @@ exports.createCourse = async (req, res) => {
       subject_id: subject,
       main_category_id: main_category,
       sub_category_id: sub_category,
-      teacher_id, // ✅ SAVE
+      teacher_id, //SAVE
       type: "online",
       language,
       certificate,
@@ -163,7 +162,7 @@ exports.updateCourse = async (req, res) => {
       price,
       sale_price,
       teacher_id,
-    } = body; // ✅ FIXED HERE
+    } = body; // FIXED HERE
 
     const course = await Course.findById(id);
 
@@ -174,7 +173,7 @@ exports.updateCourse = async (req, res) => {
       });
     }
 
-    // ✅ Slug update
+    // Slug update
     let slug = course.slug;
 
     if (course_name && course_name !== course.name) {
@@ -198,13 +197,13 @@ exports.updateCourse = async (req, res) => {
       }
     }
 
-    // ✅ Image update
+    // Image update
     let image_path = course.thumbnail;
     if (req.file) {
       image_path = `/uploads/online_course/${req.file.filename}`;
     }
 
-    // ✅ Dynamic update
+    // Dynamic update
     const updateData = {
       slug,
       thumbnail: image_path,

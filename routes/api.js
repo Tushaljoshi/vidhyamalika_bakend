@@ -26,6 +26,7 @@ const controller = require("../controllers/api/subject.controller");
 const categories_controller = require("../controllers/api/mainCategory.controller");
 const SubCategorycontroller = require("../controllers/api/subCategory.controller");
 const Coursecontroller = require("../controllers/api/course.controller");
+const Slotscontroller = require("../controllers/api/slot.controller");
 const createUploader = require("../config/multer");
 const upload = createUploader("sub_category");
 const courseupload = createUploader("online_course");
@@ -167,5 +168,14 @@ router.get("/Course/:id", Coursecontroller.getCourseById);
 router.post("/Course", courseupload.single("thumbnail"), Coursecontroller.createCourse);
 router.put("/Course/:id", courseupload.single("thumbnail"), Coursecontroller.updateCourse);
 router.delete("/Course/:id", Coursecontroller.deleteCourse);
+
+router.post("/settings", Slotscontroller.saveTeacherSettings);
+router.put("/settings", Slotscontroller.updateTeacherSettings);
+router.get("/settings", Slotscontroller.getTeacherSettings);
+router.get("/slots", Slotscontroller.getSlots);
+router.post("/slots", Slotscontroller.createSlot);
+router.get("/slots", Slotscontroller.getAllSlots);
+router.get("/slots/course", Slotscontroller.getSlotsByCourse);
+router.delete("/slots/:id", Slotscontroller.deleteSlot);
 
 module.exports = router;
