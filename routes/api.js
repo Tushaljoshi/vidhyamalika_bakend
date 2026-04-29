@@ -77,11 +77,6 @@ router.get("/recorded-course-test-attempt", ApiAuthMiddleware, RecordedCourseTes
 router.get("/get-profile", ApiAuthMiddleware, ProfileApiController.getProfile);
 router.post("/update-profile", ApiAuthMiddleware, ProfileApiController.updateProfile);
 
-router.post("/teacher/add-availability", ApiAuthMiddleware, TeacherApiController.addTeacherAvailability);
-router.post("/teacher/settings", ApiAuthMiddleware, TeacherApiController.saveTeacherSettings);
-router.get("/teacher/availability/:teacherId", ApiAuthMiddleware, TeacherApiController.getTeacherAvailability);
-router.get("/teachers/available-slots", TeacherApiController.getAllAvailableSlots);
-router.get("/teacher/orders", ApiAuthMiddleware, TeacherApiController.orders);
 router.get("/teacher/get-online-course-orders", ApiAuthMiddleware, OrderApiController.getOnlineCourseOrderForTeacher);
 router.get("/teacher/live-sessions", ApiAuthMiddleware, TeacherApiController.liveSessions);
 router.post("/teacher/create-batch", ApiAuthMiddleware, TeacherApiController.creatBatch);
@@ -174,7 +169,7 @@ router.put("/settings", Slotscontroller.updateTeacherSettings);
 router.get("/settings", Slotscontroller.getTeacherSettings);
 router.get("/slots", Slotscontroller.getSlots);
 router.post("/slots", Slotscontroller.createSlot);
-router.get("/slots", Slotscontroller.getAllSlots);
+router.get("/all-slots", Slotscontroller.getAllSlots);
 router.get("/slots/course", Slotscontroller.getSlotsByCourse);
 router.delete("/slots/:id", Slotscontroller.deleteSlot);
 

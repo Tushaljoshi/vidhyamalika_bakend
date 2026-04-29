@@ -11,34 +11,7 @@ const validator = require("validator");
 const { SendMail } = require("../../config/SendMail");
 const { StudentBatchAssignedEmail } = require("../../emails/StudentBatchAssignedEmail");
 const DoubtSession = require("../../models/DoubtSession");
-
-function generateSlots(settings) {
-    const {
-        session_duration,
-        break_between_sessions,
-        earliest_start_time,
-        latest_end_time
-    } = settings;
-
-    let slots = [];
-    let current = convertToMinutes(earliest_start_time);
-    const end = convertToMinutes(latest_end_time);
-
-    while (current + session_duration <= end) {
-        let start = formatTime(current);
-        let finish = formatTime(current + session_duration);
-
-        slots.push({
-            startTime: start,
-            endTime: finish
-        });
-
-        current += session_duration + break_between_sessions;
-    }
-
-    return slots;
-}
-
+const TeacherSlot = require("../../models/TeacherSlot");
 
 exports.teacherDashboard = async (req, res) => {
     try {
@@ -122,125 +95,128 @@ exports.teacherDashboard = async (req, res) => {
 
 exports.register = async (req, res) => {
     try {
-        const {
-            name,
-            email,
-            phone,
-            gender,
-            password,
-            qualification,
-            experience,
-            address,
-        } = req.body;
-
-        if (!name || !email || !phone || !password) {
-            return res.status(400).json({
-                status: false,
-                message: "All fields (name, email, phone, password) are required"
-            });
-        }
-
-        const trimmedName = name.trim();
-
-        if (!validator.isLength(trimmedName, { min: 2, max: 50 })) {
-            return res.status(400).json({
-                status: false,
-                message: "Name must be between 2 and 50 characters"
-            });
-        }
-
-        if (!validator.isAlpha(trimmedName.replace(/\s/g, ""))) {
-            return res.status(400).json({
-                status: false,
-                message: "Name must contain only letters"
-            });
-        }
-
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({
-                status: false,
-                message: "Invalid email format"
-            });
-        }
-
-        const normalizedEmail = validator.normalizeEmail(email, {
-            gmail_remove_dots: false
+      const {
+        name,
+        email,
+        phone,
+        gender,
+        password,
+        qualification,
+        experience,
+        address,
+      } = req.body;
+  
+      if (!name || !email || !phone || !password) {
+        return res.status(400).json({
+          status: false,
+          message: "All fields are required",
         });
-
-        if (!validator.isMobilePhone(phone, "en-IN")) {
-            return res.status(400).json({
-                status: false,
-                message: "Invalid Indian phone number"
-            });
-        }
-
-        if (!validator.isStrongPassword(password, {
-            minLength: 6,
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 0
-        })) {
-            return res.status(400).json({
-                status: false,
-                message: "Weak password"
-            });
-        }
-
-        const existingUser = await User.findOne({
-            $or: [{ email: normalizedEmail }, { phone }]
+      }
+  
+      const trimmedName = name.trim();
+  
+      if (!validator.isEmail(email)) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid email",
         });
-
-        if (existingUser) {
-            return res.status(400).json({
-                status: false,
-                message: "Email or Phone already exists"
-            });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = await User.create({
-            name: trimmedName,
-            email: normalizedEmail,
-            phone,
-            gender,
-            password: hashedPassword,
-            user_role: 1, //Teacher
-            qualification,
-            experience,
-            address,
+      }
+  
+      if (!validator.isMobilePhone(phone, "en-IN")) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid phone",
         });
-
-        const token = jwt.sign(
-            {
-                id: user._id,
-                role: user.user_role
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "7d" }
-        );
-
-        const userData = user.toObject();
-        delete userData.password;
-
-        return res.status(201).json({
-            status: true,
-            message: "Teacher registered successfully",
-            token,
-            data: userData,
-            user_role: "teacher",
-            user_role_id: user.user_role,
+      }
+  
+      const existingUser = await User.findOne({
+        $or: [{ email }, { phone }],
+      });
+  
+      if (existingUser) {
+        return res.status(400).json({
+          status: false,
+          message: "Email or Phone already exists",
         });
-
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      const user = await User.create({
+        name: trimmedName,
+        email,
+        phone,
+        gender,
+        password: hashedPassword,
+        user_role: 1,
+        qualification,
+        experience,
+        address,
+      });
+  
+      // 🔥 STEP 1: CREATE DEFAULT COURSE
+      const defaultCourse = await Course.create({
+        name: "Default Course",
+        teacher_id: user._id,
+        subject_id: null,
+      });
+  
+      // 🔥 STEP 2: CREATE DUMMY SLOTS
+      const days = ["Monday", "Tuesday", "Wednesday"];
+  
+      const slots = [];
+  
+      for (let day of days) {
+        const slot = await TeacherSlot.create({
+          teacher_id: user._id,
+          course_id: defaultCourse._id,
+          day,
+          start_time: "10:00",
+          end_time: "11:00",
+          is_booked: false,
+          settings_snapshot: {
+            session_duration: 60,
+            break_between_sessions: 0,
+            earliest_start_time: "10:00",
+            latest_end_time: "11:00",
+            max_sessions_per_day: 1,
+            days,
+          },
+        });
+  
+        slots.push(slot);
+      }
+  
+      // 🔐 TOKEN
+      const token = jwt.sign(
+        {
+          id: user._id,
+          role: user.user_role,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+  
+      const userData = user.toObject();
+      delete userData.password;
+  
+      return res.status(201).json({
+        status: true,
+        message: "Teacher registered with default slots",
+        token,
+        data: userData,
+        default_course: defaultCourse,
+        created_slots: slots.length,
+      });
+  
     } catch (error) {
-        console.error("Register Error:", error.message);
-        return res.status(500).json({
-            status: false,
-            message: "Server error"
-        });
+      console.error("Register Error:", error.message);
+      return res.status(500).json({
+        status: false,
+        message: "Server error",
+      });
     }
-};
+  };
 
 exports.login = async (req, res) => {
     try {
@@ -288,217 +264,6 @@ exports.login = async (req, res) => {
             status: false,
             message: "Server error",
               error:error.message
-        });
-    }
-};
-
-exports.addTeacherAvailability = async (req, res) => {
-    try {
-        const { teacherId, weekly_availability } = req.body;
-
-        if (!teacherId || !weekly_availability) {
-            return res.status(400).json({
-                status: false,
-                message: "teacherId and availability are required"
-            });
-        }
-
-        const teacher = await User.findById(teacherId);
-
-        if (!teacher || teacher.user_role !== 1) {
-            return res.status(404).json({
-                status: false,
-                message: "Teacher not found"
-            });
-        }
-
-        // OPTIONAL: validate days
-        const validDays = [
-            "Monday", "Tuesday", "Wednesday",
-            "Thursday", "Friday", "Saturday", "Sunday"
-        ];
-
-        for (let dayObj of weekly_availability) {
-            if (!validDays.includes(dayObj.day)) {
-                return res.status(400).json({
-                    status: false,
-                    message: `Invalid day: ${dayObj.day}`
-                });
-            }
-        }
-
-        // Save / overwrite availability
-        teacher.weekly_availability = weekly_availability;
-
-        await teacher.save();
-
-        return res.status(200).json({
-            status: true,
-            message: "Availability updated successfully",
-            data: teacher.weekly_availability
-        });
-
-    } catch (error) {
-        console.error("Availability Error:", error.message);
-        return res.status(500).json({
-            status: false,
-            message: "Server error"
-        });
-    }
-};
-
-exports.saveTeacherSettings = async (req, res) => {
-    try {
-        const {
-            teacherId,
-            session_duration,
-            break_between_sessions,
-            earliest_start_time,
-            latest_end_time,
-            max_sessions_per_day,
-            subjects,
-            classes
-        } = req.body;
-
-        if (!teacherId) {
-            return res.status(400).json({
-                status: false,
-                message: "teacherId is required"
-            });
-        }
-
-        const teacher = await User.findById(teacherId);
-
-        if (!teacher || teacher.user_role !== 1) {
-            return res.status(404).json({
-                status: false,
-                message: "Teacher not found"
-            });
-        }
-
-        teacher.teaching_settings = {
-            session_duration,
-            break_between_sessions,
-            earliest_start_time,
-            latest_end_time,
-            max_sessions_per_day,
-            subjects,
-            classes
-        };
-
-        await teacher.save();
-
-        return res.status(200).json({
-            status: true,
-            message: "Settings saved successfully",
-            data: teacher.teaching_settings
-        });
-
-    } catch (error) {
-        console.error("Settings Error:", error.message);
-        return res.status(500).json({
-            status: false,
-            message: "Server error"
-        });
-    }
-};
-
-exports.getTeacherAvailability = async (req, res) => {
-    try {
-        const { teacherId } = req.params;
-
-        if (!teacherId) {
-            return res.status(400).json({
-                status: false,
-                message: "teacherId is required"
-            });
-        }
-
-        const teacher = await User.findById(teacherId)
-            .select("name email weekly_availability teaching_settings user_role");
-
-        if (!teacher || teacher.user_role !== 1) {
-            return res.status(404).json({
-                status: false,
-                message: "Teacher not found"
-            });
-        }
-
-        return res.status(200).json({
-            status: true,
-            message: "Availability fetched successfully",
-            data: {
-                teacherId: teacher._id,
-                name: teacher.name,
-                email: teacher.email,
-                availability: teacher.weekly_availability || [],
-                settings: teacher.teaching_settings || {}
-            }
-        });
-
-    } catch (error) {
-        console.error("Get Availability Error:", error.message);
-        return res.status(500).json({
-            status: false,
-            message: "Server error"
-        });
-    }
-};
-
-exports.getAllAvailableSlots = async (req, res) => {
-    try {
-        const { day, subject, className } = req.query;
-
-        // Step 1: Get all teachers
-        const teachers = await User.find({ user_role: 1 })
-            .select("name email weekly_availability");
-
-        let result = [];
-
-        // Step 2: Loop teachers
-        teachers.forEach((teacher) => {
-            if (!teacher.weekly_availability) return;
-
-            teacher.weekly_availability.forEach((dayObj) => {
-
-                // Filter by day (optional)
-                if (day && dayObj.day !== day) return;
-
-                const filteredSlots = dayObj.slots.filter((slot) => {
-
-                    // Filter subject
-                    if (subject && slot.subject !== subject) return false;
-
-                    // Filter class
-                    if (className && slot.class !== className) return false;
-
-                    return true;
-                });
-
-                if (filteredSlots.length > 0) {
-                    result.push({
-                        teacherId: teacher._id,
-                        teacherName: teacher.name,
-                        email: teacher.email,
-                        day: dayObj.day,
-                        slots: filteredSlots
-                    });
-                }
-            });
-        });
-
-        return res.status(200).json({
-            status: true,
-            message: "Available slots fetched successfully",
-            total: result.length,
-            data: result
-        });
-
-    } catch (error) {
-        console.error("Get Slots Error:", error.message);
-        return res.status(500).json({
-            status: false,
-            message: "Server error"
         });
     }
 };

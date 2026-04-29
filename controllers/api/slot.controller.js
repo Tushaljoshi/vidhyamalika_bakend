@@ -121,6 +121,7 @@ exports.saveTeacherSettings = async (req, res) => {
       latest_end_time,
       max_sessions_per_day,
       days = [],
+      className
     } = body;
 
     if (!teacherId) {
@@ -146,6 +147,7 @@ exports.saveTeacherSettings = async (req, res) => {
       latest_end_time,
       max_sessions_per_day,
       days,
+      className
     };
 
     await teacher.save();
