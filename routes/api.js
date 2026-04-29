@@ -169,8 +169,6 @@ router.put("/settings", Slotscontroller.updateTeacherSettings);
 router.get("/settings", Slotscontroller.getTeacherSettings);
 router.get("/slots", Slotscontroller.getSlots);
 router.post("/slots", Slotscontroller.createSlot);
-router.get("/all-slots", Slotscontroller.getAllSlots);
-router.get("/slots/course", Slotscontroller.getSlotsByCourse);
 router.delete("/slots/:id", Slotscontroller.deleteSlot);
 
 module.exports = router;

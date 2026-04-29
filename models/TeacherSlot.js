@@ -29,7 +29,7 @@ const teacherSlotSchema = new mongoose.Schema(
       ref: "Subject",
     },
 
-    class: String,
+    className: String,
 
     is_booked: {
       type: Boolean,
@@ -43,7 +43,8 @@ const teacherSlotSchema = new mongoose.Schema(
       earliest_start_time: String,
       latest_end_time: String,
       max_sessions_per_day: Number,
-      days: [String]
+      days: [String],
+      className: String,
     },
   },
   { timestamps: true }
