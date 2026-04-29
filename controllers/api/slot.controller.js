@@ -90,7 +90,7 @@ exports.createSlot = async (req, res) => {
             start_time,
             end_time,
             subject,
-            class: className,
+            className 
         });
 
         return res.status(201).json({
