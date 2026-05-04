@@ -43,8 +43,7 @@ const teacherSlotSchema = new mongoose.Schema(
       earliest_start_time: String,
       latest_end_time: String,
       max_sessions_per_day: Number,
-      days: [String],
-      className: String,
+      className: [String],
     },
   },
   { timestamps: true }

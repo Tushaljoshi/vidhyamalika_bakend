@@ -1,7 +1,7 @@
 const User = require("../../models/User");
 const Course = require("../../models/Course");
 const TeacherSlot = require("../../models/TeacherSlot");
-
+const TeacherSetting = require("../../models/TeacherSetting");
 // GET ALL
 exports.getAllSlots = async (req, res) => {
     const data = await TeacherSlot.find()
@@ -110,19 +110,15 @@ exports.createSlot = async (req, res) => {
 
 exports.saveTeacherSettings = async (req, res) => {
   try {
-    const body = req.body || {};
-
     const {
       teacherId,
-      course_id,
       session_duration,
       break_between_sessions,
       earliest_start_time,
       latest_end_time,
       max_sessions_per_day,
-      days = [],
-      className
-    } = body;
+      className = [],
+    } = req.body;
 
     if (!teacherId) {
       return res.status(400).json({
@@ -131,139 +127,62 @@ exports.saveTeacherSettings = async (req, res) => {
       });
     }
 
-    const teacher = await User.findById(teacherId);
-
-    if (!teacher) {
-      return res.status(404).json({
-        status: false,
-        message: "Teacher not found",
-      });
-    }
-
-    teacher.teaching_settings = {
-      session_duration,
-      break_between_sessions,
-      earliest_start_time,
-      latest_end_time,
-      max_sessions_per_day,
-      days,
-      className
-    };
-
-    await teacher.save();
-
-    let courses = [];
-
-    if (course_id) {
-      const course = await Course.findOne({
-        _id: course_id,
-        teacher_id: teacherId,
-      });
-
-      if (!course) {
-        return res.status(404).json({
-          status: false,
-          message: "Course not found for this teacher",
-        });
+    const setting = await TeacherSetting.findOneAndUpdate(
+      { teacher_id: teacherId },
+      {
+        session_duration,
+        break_between_sessions,
+        earliest_start_time,
+        latest_end_time,
+        max_sessions_per_day,
+        className,
+      },
+      {
+        new: true,
+        upsert: true, // create if not exists
       }
-
-      courses = [course];
-
-      await TeacherSlot.deleteMany({
-        teacher_id: teacherId,
-        course_id: course_id,
-      });
-
-    } else {
-      courses = await Course.find({ teacher_id: teacherId });
-
-      await TeacherSlot.deleteMany({ teacher_id: teacherId });
-    }
-    const toMinutes = (t) => {
-      const [h, m] = t.split(":").map(Number);
-      return h * 60 + m;
-    };
-
-    const toTime = (m) => {
-      const h = Math.floor(m / 60);
-      const min = m % 60;
-      return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
-    };
-
-    const start = toMinutes(earliest_start_time);
-    const end = toMinutes(latest_end_time);
-
-    const selectedDays =
-      days.length > 0
-        ? days
-        : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-    let createdSlots = [];
-    for (let course of courses) {
-      for (let day of selectedDays) {
-        let current = start;
-        let count = 0;
-
-        while (current + session_duration <= end) {
-          if (count >= max_sessions_per_day) break;
-
-          const s = toTime(current);
-          const e = toTime(current + session_duration);
-
-          const slot = await TeacherSlot.create({
-            teacher_id: teacherId,
-            course_id: course._id,
-            day,
-            start_time: s,
-            end_time: e,
-            subject: course.subject_id,
-
-            settings_snapshot: {
-              session_duration,
-              break_between_sessions,
-              earliest_start_time,
-              latest_end_time,
-              max_sessions_per_day,
-              days,
-            },
-          });
-
-          createdSlots.push(slot);
-
-          current += session_duration + break_between_sessions;
-          count++;
-        }
-      }
-    }
+    );
 
     return res.json({
       status: true,
-      message: "Settings saved & slots generated",
-      total_slots_created: createdSlots.length,
+      message: "Settings saved successfully",
+      data: setting,
     });
 
-  } catch (err) {
-    console.error("ERROR:", err);
+  } catch (error) {
     return res.status(500).json({
       status: false,
-      message: err.message,
+      message: error.message,
     });
   }
 };
 
-// GET TEACHER SETTINGS
 exports.getTeacherSettings = async (req, res) => {
   try {
     const { teacherId } = req.query;
 
-    const teacher = await User.findById(teacherId).select("teaching_settings");
+    if (!teacherId) {
+      return res.status(400).json({
+        status: false,
+        message: "teacherId is required",
+      });
+    }
+
+    const setting = await TeacherSetting.findOne({
+      teacher_id: teacherId,
+    });
 
     return res.json({
       status: true,
-      data: teacher?.teaching_settings || {},
+      message: "Settings fetched successfully",
+      data: setting || {},
     });
-  } catch (err) {
-    return res.status(500).json({ status: false, message: err.message });
+
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: error.message,
+    });
   }
 };
 
