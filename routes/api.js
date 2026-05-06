@@ -158,7 +158,8 @@ router.post("/SubCategory", upload.single("category_image"), SubCategorycontroll
 router.put("/SubCategory/:id", upload.single("category_image"), SubCategorycontroller.updateSubCategory);
 router.delete("/SubCategory/:id", SubCategorycontroller.deleteSubCategory);
 
-router.get("/Course", Coursecontroller.getCourses);
+router.get("/Course", ApiAuthMiddleware,Coursecontroller.getCourses);
+router.get("/Course/all", Coursecontroller.getCourses);
 router.get("/Course/:id", Coursecontroller.getCourseById);
 router.post("/Course", courseupload.single("thumbnail"), Coursecontroller.createCourse);
 router.put("/Course/:id", courseupload.single("thumbnail"), Coursecontroller.updateCourse);
